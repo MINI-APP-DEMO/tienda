@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../../NODE-JS/backend"
+		}
+	],
+	"settings": {
+		"editor.tabSize": 2
+	}
+}
