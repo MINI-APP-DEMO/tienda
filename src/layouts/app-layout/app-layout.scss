@@ -1,0 +1,215 @@
+@import "../../assets/styles/constants.scss";
+
+.lbl-menu {
+  font-size: 16px;
+}
+.profile-img {
+  border-width: 1px;
+}
+.lbl-profile {
+  font-size: 12px;
+}
+
+.lbl-profile {
+  &:hover {
+    color: $bg-app;
+    &::after {
+      border-right: 3px solid $bg-app !important;
+      border-bottom: 3px solid $bg-app !important;
+    }
+  }
+  &::after {
+    content: "";
+    margin-left: 3px;
+    margin-top: 2px;
+    display: inline-block;
+    position: absolute;
+    border-right: 3px solid black;
+    border-bottom: 3px solid black;
+    width: 7px;
+    height: 7px;
+    transform: rotate(45deg);
+  }
+}
+.card-items-profile {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.5s linear;
+  &.active {
+    visibility: visible;
+    opacity: 1;
+  }
+  .item-link {
+    &:hover {
+      background: $bg-app;
+      cursor: pointer;
+      background: rgba($bg-app, 1);
+      color: white;
+      span {
+        color: white;
+      }
+    }
+  }
+}
+
+.app {
+  overflow-x: hidden;
+  width: calc(100%);
+  transition: all 0.5s;
+  opacity: 1;
+  visibility: visible;
+  &.extended {
+    width: calc(100% + $sidebar-width);
+    transition: all 0.5s;
+    opacity: 1;
+    visibility: visible;
+  }
+  .sidebar.mostrar {
+    transition: all 0.5s;
+    opacity: 1;
+    visibility: visible;
+    width: $sidebar-width !important;
+  }
+  .sidebar.ocultar {
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s;
+    // width: calc(0% - $sidebar-width);
+    width: 0;
+  }
+  .content-menu {
+    position: relative;
+    .menu-item {
+      color: white;
+      position: relative;
+      width: 100%;
+      cursor: pointer;
+      a {
+        display: block;
+        width: 100%;
+        height: 100%;
+        padding: 10px 14px;
+        display: flex;
+        align-items: center;
+        span {
+          padding-right: 5px;
+        }
+      }
+      &.menu1,
+      &.menu2 {
+        > a:hover {
+          // border-top: $bg-color-active;
+          // border-top: 1px solid white;
+          // border-bottom: 1px solid white;
+
+          text-shadow: rgb(0 0 0 / 25%) 0 -1px 0;
+          background: -webkit-gradient(
+              linear,
+              left top,
+              left bottom,
+              from(#334556),
+              to(#2c4257)
+            ),
+            #2a3f54;
+          background: linear-gradient(#334556, #2c4257), #2a3f54;
+          -webkit-box-shadow: rgb(0 0 0 / 25%) 0 1px 0,
+            inset rgb(255 255 255 / 16%) 0 1px 0;
+          box-shadow: rgb(0 0 0 / 25%) 0 1px 0,
+            inset rgb(255 255 255 / 16%) 0 1px 0;
+        }
+      }
+      .menu2-children {
+        display: none;
+        visibility: hidden;
+        opacity: 0;
+        transition: all 0.5s;
+        &.active {
+          display: block;
+          visibility: visible;
+          opacity: 1;
+          transition: all 0.5s;
+        }
+        li {
+          > a {
+            margin-left: 25px;
+            padding-left: 10px;
+          }
+          > a:hover {
+            color: #ddd;
+            border-bottom: 1px solid white;
+          }
+          &::after {
+            border-left: 1px solid #425668;
+            bottom: 0;
+            content: "";
+            left: 27px;
+            position: absolute;
+            top: 40px;
+          }
+          &::before {
+            background: #425668;
+            bottom: auto;
+            content: "";
+            height: 8px;
+            left: 23px;
+            margin-top: 15px;
+            position: absolute;
+            right: auto;
+            width: 8px;
+            z-index: 1;
+            border-radius: 50%;
+          }
+        }
+      }
+
+      &.active {
+        > a {
+          // background-color: $bg-color-active;
+          text-shadow: rgb(0 0 0 / 25%) 0 -1px 0;
+          background: -webkit-gradient(
+              linear,
+              left top,
+              left bottom,
+              from(#334556),
+              to(#2c4257)
+            ),
+            #2a3f54;
+          background: linear-gradient(#334556, #2c4257), #2a3f54;
+          -webkit-box-shadow: rgb(0 0 0 / 25%) 0 1px 0,
+            inset rgb(255 255 255 / 16%) 0 1px 0;
+          box-shadow: rgb(0 0 0 / 25%) 0 1px 0,
+            inset rgb(255 255 255 / 16%) 0 1px 0;
+        }
+        border-right: 3px solid $bg-color-active;
+        &.menu2::after {
+          content: "";
+          top: 11px;
+          border-left: 2px solid white;
+          border-bottom: 2px solid white;
+          width: 8px;
+          height: 8px;
+          position: absolute;
+          right: 20px;
+          transform: rotate(-135deg);
+          transition: all 0.4s;
+        }
+      }
+      &.menu2::after {
+        content: "";
+        top: 11px;
+        border-left: 2px solid white;
+        border-bottom: 2px solid white;
+        width: 8px;
+        height: 8px;
+        position: absolute;
+        right: 20px;
+        transform: rotate(-45deg);
+        transition: all 0.4s;
+      }
+    }
+  }
+  > .content {
+    min-width: calc(100% - $sidebar-width);
+    // min-width: 0;
+  }
+}
