@@ -4,11 +4,14 @@ import { Outlet } from "react-router-dom";
 import './app-layout.scss'
 import ResizeObserver, { withResizeDetector } from 'react-resize-detector';
 import { INavegacion, NavegacionApp } from '../../_nav'
-
+//@ts-ignore
+import * as ScreenSizeDetector from 'screen-size-detector';
 
 export const IconMenu = (props: IPropsSidebar) => {
   return <a style={{ borderRadius: '3px' }} onClick={() => {
-    props.ctx.setState({ hideSidebar: !props.ctx.state.hideSidebar })
+    props.ctx.setState({
+      hideSidebar: !props.ctx.state.hideSidebar, setDefaultResize: props.ctx.state.setDefaultResize + 1,
+      clickHidden: !props.ctx.state.clickHidden,})
   }}
     className="rounded border-solid cursor-pointer hover:bg-sky-800 hover:text-white
  active:bg-sky-800 active:text-white shadow shadow-gray-00 border-gray-200 bg-white p-3">
@@ -20,7 +23,7 @@ const UsuarioNav = (props: IPropsUsuarioNav) => {
   const [activeMenu, setActiveMenu] = useState(false)
   return <div className="relative ">
     <a onClick={() => { setActiveMenu(!activeMenu) }} className={"flex items-center cursor-pointer  mr-1 hover:shadow-sm "}>
-      <img className="profile-img h-10 rounded-3xl border-solid cursor-pointer" src="images/descarga.jpeg"></img>
+      <img className="profile-img h-10 rounded-3xl border-solid cursor-pointer" src="/images/descarga.jpeg"></img>
       <label className="lbl-profile px-2 cursor-pointer">{props.username}</label>
     </a>
     <div className={(activeMenu ? 'active ' : '') + "absolute card-items-profile top-10 rounded-sm shadow-md right-0 w-full block bg-white border-stone-500"}>
@@ -70,7 +73,7 @@ const SidebarRight = (props: IPropsSidebar) => {
       <div className="info-usuario">
         <div className={(props.ctx.state.hideSidebar ? 'hidden' : 'flex') + " items-center p-4 gap-3"}>
           <img className="profile-img h-14  border-solid cursor-pointer" style={{ borderWidth: '2px', borderColor: '#ddd', borderRadius: '50%' }}
-            src="images/descarga.jpeg"></img>
+            src="/images/descarga.jpeg"></img>
           <div className="flex-wrap">
             <span className="block text-white mb-0 pb-0" style={{ width: '9px' }}>Bienvenido,</span>
             <label className="block text-white">{props.ctx.state.username}</label>
@@ -111,7 +114,11 @@ export const Submenu2 = (props: IMenuNav) => {
     <a className="" onClick={() => { setActiveSubmenu(!activeSubmenu) }}><span className={props.informacion.icon || ''} style={{ fontSize: props.informacion.iconSize }}></span>{props.informacion.name}</a>
     <ul className={"menu2-children  " + (activeSubmenu ? 'active' : '')}>
       {props.informacion.children?.map((item, key2) => {
-        return <li key={'sub' + key2}><Link className="" to={item.path}><span className={item.icon} style={{ fontSize: item.iconSize || '13px' }}></span>{item.name}</Link></li>
+        let router = ''
+        if ((!props.informacion.path.trim().length || props.informacion.path.trim().localeCompare('/')==0)
+          && (!item.path.trim().length || item.path.trim().localeCompare('/') == 0)) router = '/'
+        else router = props.informacion.path.trim()+item.path
+        return <li key={'sub' + key2}><Link className="" to={router}><span className={item.icon} style={{ fontSize: item.iconSize || '13px' }}></span>{item.name}</Link></li>
       })}
 
     </ul>
@@ -133,9 +140,11 @@ interface IStateApplayout {
   username: string
   navegacion?: any[]
   hideSidebar: boolean
-  tipoSidebar?: 'Default' | 'sm' | 'xs' | 'hidden'
+  tipoSidebar?: 'Default' | 'sm' | 'hidden'
+  clickHidden:boolean
   width?: number
   height?: number
+  setDefaultResize:number
 
 }
 interface IPropApplayout { }
@@ -147,24 +156,78 @@ export class AppLayout extends PureComponent<any, IStateApplayout>{
       hideSidebar: false,
       username: 'Jonathan Amaranto',
       tipoSidebar: 'hidden',
+      setDefaultResize: 0,
+      clickHidden:false
     }
   }
-  componentDidUpdate(prevProps: any) {
-    const { width } = this.props;
+  componentDidUpdate(prevProps: any, prevState: any) {
+   
+    const screen = new ScreenSizeDetector(); // same as const screen = new ScreenSizeDetector(); since the above are the default options.
+    if (screen.width != prevState.width) {     
+      if (screen.is.mobile || screen.is.smartwatch || screen.is.tablet) {
+        this.setState({
+          hideSidebar: true,
+          setDefaultResize: 0,
+          width: screen.width,
+          clickHidden: true,
+          tipoSidebar:'sm'
+        })
+      }
+      if (screen.is.laptop || screen.is.desktop || screen.is.largedesktop) {
+        this.setState({
+          hideSidebar: false,
+          setDefaultResize: 0,
+          width: screen.width,
+          clickHidden: false,
+          tipoSidebar: 'Default'
+        })
+      }
+    } 
+  }
 
-    if (width !== prevProps.width) {
-      console.log('resize::', width)
-      this.setState({ width })
-    }
-  }
   render() {
-    console.log('rendimensionando::', { width: this.state.width + 'px' })
-    return <div className={"app p-0 m-0 flex gap-1" + (this.state.hideSidebar ? ' extended' : '')}
-    // style={{ width: this.state.width + 'px' || '100%' }}
+    
+    // Use it like so:
+    const state = this.state
+    const {hideSidebar,setDefaultResize,tipoSidebar,clickHidden }=state
+    let stylesTamanioPantalla = ''
+    console.log('hide sidebar', this.state.hideSidebar)
+    const classNameTipoSidebar = ' tipo-sidebar-' + tipoSidebar 
+    let classNameMostarOcultar = ''
+    let classNameExtended=''
+    
+    if (hideSidebar) {
+      if (setDefaultResize == 0) {
+        classNameMostarOcultar = 'ocultar';
+        if (state.tipoSidebar == 'Default') {
+          classNameExtended = clickHidden ? 'extended' : ''
+        } 
+        if (state.tipoSidebar == 'sm') { classNameExtended = '' }
+        if (state.tipoSidebar == 'hidden') { classNameExtended = 'extended' }
+      }
+      else if (setDefaultResize != 0) {
+        debugger
+        classNameMostarOcultar = clickHidden ? 'ocultar' : 'mostrar'
+        if (state.tipoSidebar == 'Default') {
+          classNameExtended = clickHidden ? 'extended' : ''
+        }
+      
+      }
+    } else {
+      if (setDefaultResize == 0) {
+        classNameMostarOcultar = 'mostrar'; classNameExtended = ''
+      }
+      else if (setDefaultResize != 0) {
+        classNameMostarOcultar = clickHidden ? 'ocultar' : 'mostrar'
+       
+      }
+    }
+    
+    
+
+    return <div className={"app p-0 m-0 flex gap-1 " + classNameExtended}
     >
-      <div className={"sidebar bg-app h-full min-h-screen  "
-        + (this.state.hideSidebar &&
-          this.state.tipoSidebar == 'hidden' ? ' ocultar' : ' mostrar')}>
+      <div className={"sidebar bg-app h-full min-h-screen  " + classNameTipoSidebar +' ' + classNameMostarOcultar}>
         <SidebarRight ctx={this} />
       </div>
       <div className="content  height-header ">

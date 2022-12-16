@@ -1,4 +1,7 @@
 @import "../../assets/styles/constants.scss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 .lbl-menu {
   font-size: 16px;
@@ -51,8 +54,8 @@
     }
   }
 }
-
-.app {
+@layer components {
+  .app {
   overflow-x: hidden;
   width: calc(100%);
   transition: all 0.5s;
@@ -212,4 +215,6 @@
     min-width: calc(100% - $sidebar-width);
     // min-width: 0;
   }
+}
+
 }

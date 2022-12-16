@@ -17,10 +17,18 @@ export interface INavegacion {
 export const NavegacionApp: Array<INavegacion> = [
  { path: '/login', name: 'Login', exact: true, icon: 'fa fa-user-alt',iconSize:'16px' },
  {
-  path: '/registros', name: 'Registros', exact: true, icon: 'bx bx-grid',iconSize: '16px',
+  path: '/', name: 'Home', exact: true, icon: 'fa fa-home',iconSize: '16px',
+  children: [
+   { path: '', name: 'Usuarios', exact: true, icon: 'fa fa-users' },
+
+  ]
+ },
+ {
+  path: '/registros', name: 'Registros', exact: true, icon: 'bx bx-grid', iconSize: '16px',
   children: [
    { path: '/usuarios', name: 'Usuarios', exact: true, icon: 'fa fa-users' },
    { path: '/personas', name: 'Personas', exact: true, icon: 'fa fa-users' },
   ]
- }
+ },
+
 ]
