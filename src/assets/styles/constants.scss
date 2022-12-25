@@ -4,6 +4,20 @@ $sidebar-width:250px;
 $sidebar-width-sm:50px;
 $header-height:50px;
 $bg-app:#2A3F54;
+$color-app-active:rgb(9, 194, 157);
 $text-app:#2A3F54;
 $bg-header:#EDEDED;
 $bg-color-active:rgb(9, 194, 157);
+
+// BreakPoints para tamaños de pantalla
+$min-X-small:0; //xs
+$max-X-small:576px; //xs
+$min-small:576px; //sm
+$max-small:768px;//sm
+$min-medium:768px;//md
+$max-medium:992px;//md
+$min-large:992px;//lg
+$max-large:1200px;//lg
+$min-extra-large:1200px;//xl
+$max-extra-large:1400px;//xl
+$max-min-max-large:1400px;//xxl

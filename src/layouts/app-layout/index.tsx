@@ -10,8 +10,7 @@ import * as ScreenSizeDetector from 'screen-size-detector';
 export const IconMenu = (props: IPropsSidebar) => {
   return <a style={{ borderRadius: '3px' }} onClick={() => {
     props.ctx.setState({
-      hideSidebar: !props.ctx.state.hideSidebar, setDefaultResize: props.ctx.state.setDefaultResize + 1,
-      clickHidden: !props.ctx.state.clickHidden,})
+      hideSidebar: !props.ctx.state.hideSidebar})
   }}
     className="rounded border-solid cursor-pointer hover:bg-sky-800 hover:text-white
  active:bg-sky-800 active:text-white shadow shadow-gray-00 border-gray-200 bg-white p-3">
@@ -64,8 +63,8 @@ const SidebarRight = (props: IPropsSidebar) => {
     <header className="flex height-header w-full shadow shadow-white">
       <div className="flex items-center justify-between w-full h-full">
         <h3 className="text-white text-center w-full  ">
-          <span style={{ fontSize: '20px' }} className=" bx bx-bar-chart-alt-2"></span>&nbsp;&nbsp;
-          <span>MINIMARKET</span>
+          <span style={{ fontSize: '20px' }} className="icon-logo bx bx-bar-chart-alt-2"></span>
+          <span className='title'>&nbsp;&nbsp;MINIMARKET</span>
         </h3>
       </div>
     </header>
@@ -74,14 +73,14 @@ const SidebarRight = (props: IPropsSidebar) => {
         <div className={(props.ctx.state.hideSidebar ? 'hidden' : 'flex') + " items-center p-4 gap-3"}>
           <img className="profile-img h-14  border-solid cursor-pointer" style={{ borderWidth: '2px', borderColor: '#ddd', borderRadius: '50%' }}
             src="/images/descarga.jpeg"></img>
-          <div className="flex-wrap">
+          <div className="informacion-usuario flex-wrap">
             <span className="block text-white mb-0 pb-0" style={{ width: '9px' }}>Bienvenido,</span>
             <label className="block text-white">{props.ctx.state.username}</label>
           </div>
 
         </div>
       </div>
-      <span className="text-white uppercase px-4 font-bold"
+      <span className="text-general text-white uppercase px-4 font-bold"
         style={{ fontSize: '11px' }}>GENERAL</span>
       <div className="navegacion pt-2">
         <ul className="content-menu">
@@ -103,7 +102,8 @@ interface IMenuNav {
 
 export const Submenu1 = (props: IMenuNav) => {
   return <li className="menu-item menu1">
-    <Link className="" to={props.informacion.path}><span className={props.informacion.icon } style={{fontSize:props.informacion.iconSize}}></span>{props.informacion.name}</Link>
+    <Link className="" to={props.informacion.path}><span className={props.informacion.icon} style={{ fontSize: props.informacion.iconSize }}></span>
+      <label className="text-route">{props.informacion.name}</label></Link>
   </li>
 }
 
@@ -111,14 +111,16 @@ export const Submenu2 = (props: IMenuNav) => {
   const [activeSubmenu, setActiveSubmenu] = useState(false)
 
   return <li className={"menu-item menu2 " + (activeSubmenu ? 'active' : '')}>
-    <a className="" onClick={() => { setActiveSubmenu(!activeSubmenu) }}><span className={props.informacion.icon || ''} style={{ fontSize: props.informacion.iconSize }}></span>{props.informacion.name}</a>
+    <a className="" onClick={() => { setActiveSubmenu(!activeSubmenu) }}><span className={props.informacion.icon || ''}
+      style={{ fontSize: props.informacion.iconSize }}></span><label className="text-route">{props.informacion.name}</label></a>
     <ul className={"menu2-children  " + (activeSubmenu ? 'active' : '')}>
       {props.informacion.children?.map((item, key2) => {
         let router = ''
         if ((!props.informacion.path.trim().length || props.informacion.path.trim().localeCompare('/')==0)
           && (!item.path.trim().length || item.path.trim().localeCompare('/') == 0)) router = '/'
         else router = props.informacion.path.trim()+item.path
-        return <li key={'sub' + key2}><Link className="" to={router}><span className={item.icon} style={{ fontSize: item.iconSize || '13px' }}></span>{item.name}</Link></li>
+        return <li key={'sub' + key2}><Link className="" to={router}><span  className={item.icon+' text-icon'} style={{ fontSize: item.iconSize || '13px' }}></span>
+          <label className="text-route">{item.name}</label></Link></li>
       })}
 
     </ul>
@@ -161,29 +163,18 @@ export class AppLayout extends PureComponent<any, IStateApplayout>{
     }
   }
   componentDidUpdate(prevProps: any, prevState: any) {
-   
     const screen = new ScreenSizeDetector(); // same as const screen = new ScreenSizeDetector(); since the above are the default options.
-    if (screen.width != prevState.width) {     
-      if (screen.is.mobile || screen.is.smartwatch || screen.is.tablet) {
+    if (screen.height != prevState.height) {
         this.setState({
-          hideSidebar: true,
           setDefaultResize: 0,
-          width: screen.width,
-          clickHidden: true,
-          tipoSidebar:'sm'
+          height: screen.height,
+        
         })
-      }
-      if (screen.is.laptop || screen.is.desktop || screen.is.largedesktop) {
-        this.setState({
-          hideSidebar: false,
-          setDefaultResize: 0,
-          width: screen.width,
-          clickHidden: false,
-          tipoSidebar: 'Default'
-        })
-      }
-    } 
+    }
   }
+
+  
+
 
   render() {
     
@@ -191,43 +182,12 @@ export class AppLayout extends PureComponent<any, IStateApplayout>{
     const state = this.state
     const {hideSidebar,setDefaultResize,tipoSidebar,clickHidden }=state
     let stylesTamanioPantalla = ''
-    console.log('hide sidebar', this.state.hideSidebar)
     const classNameTipoSidebar = ' tipo-sidebar-' + tipoSidebar 
-    let classNameMostarOcultar = ''
-    let classNameExtended=''
-    
-    if (hideSidebar) {
-      if (setDefaultResize == 0) {
-        classNameMostarOcultar = 'ocultar';
-        if (state.tipoSidebar == 'Default') {
-          classNameExtended = clickHidden ? 'extended' : ''
-        } 
-        if (state.tipoSidebar == 'sm') { classNameExtended = '' }
-        if (state.tipoSidebar == 'hidden') { classNameExtended = 'extended' }
-      }
-      else if (setDefaultResize != 0) {
-        debugger
-        classNameMostarOcultar = clickHidden ? 'ocultar' : 'mostrar'
-        if (state.tipoSidebar == 'Default') {
-          classNameExtended = clickHidden ? 'extended' : ''
-        }
-      
-      }
-    } else {
-      if (setDefaultResize == 0) {
-        classNameMostarOcultar = 'mostrar'; classNameExtended = ''
-      }
-      else if (setDefaultResize != 0) {
-        classNameMostarOcultar = clickHidden ? 'ocultar' : 'mostrar'
-       
-      }
-    }
-    
-    
-
-    return <div className={"app p-0 m-0 flex gap-1 " + classNameExtended}
+    let classNameMostarOcultar = hideSidebar?'sidebar-hidden':'sidebar-show'
+    return <div className={"app p-0 m-0 flex gap-1 " + classNameMostarOcultar}
+      // style={{ height: 'calc(100vh + ' + state.height + 'px)' }}
     >
-      <div className={"sidebar bg-app h-full min-h-screen  " + classNameTipoSidebar +' ' + classNameMostarOcultar}>
+      <div className={"sidebar bg-app" }>
         <SidebarRight ctx={this} />
       </div>
       <div className="content  height-header ">

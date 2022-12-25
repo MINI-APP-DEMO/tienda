@@ -16,16 +16,15 @@ export class Personas extends Component<any,any> {
   this.state = {
    data: dataDemo,
    columns: [
-    {_key:'id',label:'ID'},
-    { _key:'name',label:'Nombre'},
+   
+    { _key:'name',label:'Nombre',class:''},
     { _key:'position',label:'Posicion'},
     { _key:'salary',label:'Salario'},
     { _key:'start_date',label:'Fecha inicio'},
+    { _key: 'id', label: 'ID' },
     { _key:'office',label:'Fecha Oficina'},
-    { _key:'office',label:'Fecha Oficina'},
-    { _key:'office',label:'Fecha Oficina'},
-    { _key:'office',label:'Fecha Oficina'},
-    { _key:'extn',label:'Extn'}
+    { _key:'extn',label:'Extn'},
+    { _key:'...',label:'...'},
    ]
   }
  }
@@ -38,7 +37,7 @@ export class Personas extends Component<any,any> {
    header={{title:'Usuarios',icon:'fa fa-users',btnAdd:true}}
   >			
    <Container>
-    <Tabla data={state.data} columns={state.columns} />
+    <Tabla data={state.data} columns={state.columns} class={'bordered responsive' } />
    </Container>
   </LayoutPage>
  }

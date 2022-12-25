@@ -1,0 +1,110 @@
+@import "./constants";
+
+@media screen and (max-width: $max-X-small) {
+  .app {
+    &.sidebar-hidden {
+      > .sidebar {
+        width: 0;
+        // transition: all 0.5s;
+        visibility: hidden;
+      }
+      .menu2-children {
+        display: none !important;
+        &.active {
+          display: none !important;
+          position: relative;
+          z-index: auto;
+          background-color:inherit !important;
+          width: calc(0) !important;
+          .text-icon {
+            font-size: 13px !important;
+          }
+        }
+      }
+    }
+    &.sidebar-show {
+      > .content {
+        width: calc(100% - $sidebar-width-sm);
+        transition: all 0.5s;
+      }
+      > .sidebar {
+        width: $sidebar-width-sm;
+        transition: all 0.5s;
+        header {
+          h3 {
+            .title {
+              display: none;
+            }
+            .icon-logo {
+              font-size: 28px !important;
+            }
+          }
+        }
+        .content {
+          .info-usuario {
+            img {
+              width: 30px;
+              height: 30px;
+            }
+            .informacion-usuario {
+              display: none;
+            }
+          }
+          .text-general {
+            display: none;
+          }
+          .navegacion {
+            .content-menu {
+              .menu-item {
+                display: block;
+                width: calc($sidebar-width-sm);
+                > a {
+                  display: block !important;
+                  padding: 0.5rem 0;
+                  margin: 0;
+                  width: 100%;
+                  text-align: center;
+                  .text-route {
+                    display: flex;
+                    flex-wrap: wrap;
+                    font-size: 11px;
+                    position: relative;
+                    left: 0;
+                  }
+                }
+                &.menu2,
+                &.menu1 {
+                  a {
+                    > span {
+                      display: block;
+                      font-size: 20px !important;
+                    }
+                    > label {
+                      display: block;
+                    }
+                  }
+                }
+
+                .menu2-children {
+                  display: none !important;
+                  &.active {
+                    display: block !important;
+                    position: absolute;
+                    top: 0;
+                    left: $sidebar-width-sm;
+                    z-index: 10;
+                    background-color: $bg-app !important;
+                    width: calc($sidebar-width - 7rem) !important;
+                    .text-icon {
+                      font-size: 14px !important;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

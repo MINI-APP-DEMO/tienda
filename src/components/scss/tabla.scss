@@ -1,0 +1,28 @@
+@import '../../assets/styles/constants';
+
+$bordered-color: #c8c4c4;
+
+.table-content:has(> table.responsive) {
+  overflow-x: auto;
+}
+
+.table-component{
+  .options-lenght{
+    display: block;
+    text-align: center;
+    padding-bottom: 0.4rem;
+  }
+}
+table {
+  &.table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  &.bordered {
+    thead th ,tbody tr td{
+      border: 1px solid $bordered-color !important ;
+      font-weight: 500;
+      padding: 0.3rem 0.4rem;
+    }
+  }
+}

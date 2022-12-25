@@ -8,9 +8,10 @@
 		}
 	],
 	"settings": {
-		"editor.tabSize": 3,
+		"editor.tabSize": 2,
 		"editor.fontFamily": "jetBrains Mono",
-		"editor.fontSize": 10,
-		"editor.fontLigatures": true
+		"editor.fontSize": 11,
+		"editor.fontLigatures": true,
+		"diffEditor.codeLens": true
 	}
 }

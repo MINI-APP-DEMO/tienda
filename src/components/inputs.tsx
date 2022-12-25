@@ -1,5 +1,5 @@
 import react, { CSSProperties, Fragment, HTMLInputTypeAttribute, useState } from "react";
-
+import './scss/inputs.scss'
 interface IInputProps {
     label: string
     labelClass?: string
@@ -48,4 +48,10 @@ export const Input = react.memo((props: IInputProps) => {
 
         </div>
     </Fragment>
+})
+
+
+export const InputSearch = react.memo((props:any) => {
+    return <input className="search-input border border-solid border-gray-600 pl-2"
+        placeholder="Buscar"></input>
 })

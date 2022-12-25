@@ -54,32 +54,14 @@
     }
   }
 }
-@layer components {
+@layer components { 
   .app {
   overflow-x: hidden;
   width: calc(100%);
+  min-height: calc(100%);
   transition: all 0.5s;
   opacity: 1;
   visibility: visible;
-  &.extended {
-    width: calc(100% + $sidebar-width);
-    transition: all 0.5s;
-    opacity: 1;
-    visibility: visible;
-  }
-  .sidebar.mostrar {
-    transition: all 0.5s;
-    opacity: 1;
-    visibility: visible;
-    width: $sidebar-width !important;
-  }
-  .sidebar.ocultar {
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.5s;
-    // width: calc(0% - $sidebar-width);
-    width: 0;
-  }
   .content-menu {
     position: relative;
     .menu-item {
@@ -212,7 +194,7 @@
     }
   }
   > .content {
-    min-width: calc(100% - $sidebar-width);
+    width: calc(100%);
     // min-width: 0;
   }
 }

@@ -2,7 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 @import "./App";
+@import './responsive-app';
+
 body,html{
   font-size: 13px;
   font-family: "Roboto", serif;
+}
+#root{
+  height: 100vh;
 }
