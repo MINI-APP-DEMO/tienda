@@ -37,7 +37,7 @@ export class Personas extends Component<any,any> {
    header={{title:'Usuarios',icon:'fa fa-users',btnAdd:true}}
   >			
    <Container>
-    <Tabla data={state.data} columns={state.columns} class={'bordered responsive' } />
+    <Tabla data={state.data} columns={state.columns} class={'bordered responsive'} responsive01={true} />
    </Container>
   </LayoutPage>
  }

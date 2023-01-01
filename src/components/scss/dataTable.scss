@@ -1,0 +1,60 @@
+@import "../../assets/styles/constants";
+
+$bordered-color: #c8c4c4;
+
+table.dt-responsive {
+  thead tr th.cell-hide,
+  tbody tr td.cell-hide {
+    display: none;
+  }
+  thead th.cell-show,
+  tbody tr td.cell-show {
+    display: table-cell;
+    &.dtr-control {
+      position: relative;
+      div {
+        padding-left: 1.4rem;
+      }
+    }
+    &.dtr-control::before {
+      /*  content: '+';
+     width: 1.1rem;
+     height: 1.1rem;
+     background: $bg-app;
+     border-radius: 50%;
+     color: white;
+     position: absolute;
+     display: flex;
+     align-items: center;
+     align-content: center;
+     justify-content: center;
+     border-width: 1px;
+     border-style: $bg-color-active;
+     left: 0; */
+      left: 0px;
+      height: 14px;
+      width: 14px;
+      display: flex;
+      align-items: center;
+      align-content: center;
+      justify-content: center;
+      position: absolute;
+      color: white;
+      border: 2px solid white;
+      border-radius: 14px;
+      box-shadow: 0 0 3px #444;
+      box-sizing: content-box;
+      text-align: center;
+      font-family: "Courier New", Courier, monospace;
+      line-height: 14px;
+      content: "+";
+      background-color: #31b131;
+      cursor: pointer;
+    }
+     &.dtr-control.active::before {
+      content: "-";
+      background-color: #b13131;
+      cursor: pointer;
+    }
+  }
+}

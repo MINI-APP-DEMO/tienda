@@ -10,7 +10,7 @@
 	"settings": {
 		"editor.tabSize": 2,
 		"editor.fontFamily": "jetBrains Mono",
-		"editor.fontSize": 11,
+		"editor.fontSize": 12,
 		"editor.fontLigatures": true,
 		"diffEditor.codeLens": true
 	}

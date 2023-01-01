@@ -1,13 +1,16 @@
 import Notiflix, { Loading, Notify } from 'notiflix';
 export const SpinnerLoading = {
- loading: () => { 
-  Loading.circle()
-  Loading.standard('Loading...')
+ loading: (text?:string) => { 
+  Loading.circle(text?text:'Loading...')
+  // Loading.standard('Loading...')
  },
  remove: () => {
   Loading.remove()
  }
 }
+
+
+
 
 export const Notificacion = {
  error: (text?: string) => {

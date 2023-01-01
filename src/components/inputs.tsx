@@ -20,13 +20,13 @@ export const Input = react.memo((props: IInputProps) => {
 
     const [formSave, setFormSave] = useState(props.saveForm || {})
 
-    const handleOnBlur = (e:any) => {
+    const handleOnBlur = (e: any) => {
         const value = e.target.value
-        const form:any = formSave
+        const form: any = formSave
         form[props.itemForm] = value
         setFormSave(form)
         if (props.onBlur) props.onBlur(value)
-     }
+    }
 
     return <Fragment>
         <div className={'flex w-full align-center items-center mb-3 ' + props.class}
@@ -51,7 +51,17 @@ export const Input = react.memo((props: IInputProps) => {
 })
 
 
-export const InputSearch = react.memo((props:any) => {
+interface IPropsInputSearch{
+    onBlur:(value:string)=>void
+}
+
+export const InputSearch = react.memo((props: IPropsInputSearch) => {
+    const handleOnBlur = (e: any) => {
+        const value = e.target.value
+        if (props.onBlur) props.onBlur(value)
+    }
     return <input className="search-input border border-solid border-gray-600 pl-2"
-        placeholder="Buscar"></input>
+        placeholder="Buscar"
+        onBlur={(e) => handleOnBlur(e)}
+    />
 })

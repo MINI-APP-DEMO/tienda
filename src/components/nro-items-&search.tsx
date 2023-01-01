@@ -1,11 +1,12 @@
 import { ChangeEvent, Component, Fragment, ReactNode } from "react";
 import { Input, InputSearch } from "./inputs";
 import { Select } from "./Selects";
+import { IRowDataParseada, Tabla } from "./tabla";
 
 
 interface IPropsLengthItems {
  length: number
- setLength:(value:number)=>void
+ setLength: (value: number) => void
 }
 
 interface IStateLengthItems {
@@ -30,13 +31,13 @@ export class LengthItems extends Component<IPropsLengthItems,
  }
 
  render(): ReactNode {
-  const state=this.state
+  const state = this.state
   return <Fragment>
    <div className="pb-1">
     <label>
      Mostrar&nbsp;<Select options={() => { return state.listNumbers }}
       onChange={({ id, name }) => {
-       if(this.props.setLength)this.props.setLength(id)
+       if (this.props.setLength) this.props.setLength(id)
        this.setState({ length: id })
       }} />&nbsp;
      Entradas
@@ -47,18 +48,52 @@ export class LengthItems extends Component<IPropsLengthItems,
 }
 
 
-export class SearchTable extends Component<any, any>{
- constructor(props: any) {
+interface IPropSearchTable {
+ ctx: Tabla
+}
+
+interface IstateSearch {
+ search: string
+}
+export class SearchTable extends Component<IPropSearchTable, IstateSearch>{
+ constructor(props: IPropSearchTable) {
   super(props)
   this.state = {
-
+   search: ''
   }
+ }
+
+ filtrarInformacion(search: string) {
+  const dataParseada = { ...this.props.ctx.state.dataParseada }
+  const rows = dataParseada.rows
+  const bodyRows = rows.find(x => x.isBody == true)
+  const FilasParseadas = bodyRows?.rowsBody || []
+  const datosFiltrados = []
+  for (const row of FilasParseadas) {
+  
+   const values = Object.values(row)||[]
+   const newValue = values.map(x => { return (x + '').toLowerCase().trim() })
+   const setSearch=search.toLowerCase().trim()
+   for (let col of newValue) {
+    if (col.includes(setSearch)) {
+     datosFiltrados.push(row);
+     break
+    }
+   }
+  }
+   debugger
+  console.log('datos filtrados::',datosFiltrados)
+  this.props.ctx.setState({
+   currentPage: 1, tempData: datosFiltrados,
+   initItem: 1,
+   finItem:1
+  })
  }
  render(): ReactNode {
   return <Fragment>
    <div className="">
     <label>Buscar&nbsp;:&nbsp;</label>
-    <InputSearch />
+    <InputSearch onBlur={(value: string) => { this.filtrarInformacion(value) }} />
    </div>
   </Fragment>
  }

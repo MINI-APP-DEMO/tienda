@@ -3,6 +3,7 @@ import { TableResponsive01 } from "./tabla-responsive-01";
 import './scss/tabla.scss'
 import { arrayToMap } from "../helpers/parse-data.helper";
 import { LengthItems, SearchTable } from "./nro-items-&search";
+import { Paginacion, TextPaginacion } from "./paginacion";
 
 
 export const arrayToMapTabla = (data: any[], columns: IColumnsTabla[], groupKey: string) => {
@@ -85,21 +86,23 @@ interface IStateTabla {
   dataParseada: IDataParseada
   tBodyData: any[]
   groupKey?: string
-  tempData: IDataParseada
-  lenghtItems: number
+  tempData: IRowDataParseada[]
+  lengthItems: number
   searchTabla: string
   initItem: number
   finItem: number
-  currentPage:number
+  totalRows: number
+  currentPage: number
+  prevCurrentPage: number
 }
 
-interface IDataParseada {
+export interface IDataParseada {
   rows: IRowDataParseada[]
   class?: string
   css?: CSSProperties
 }
 
-interface IRowDataParseada {
+export interface IRowDataParseada {
   class?: string
   cells?: IItemDataParseada[]
   rowsBody?: any[]
@@ -124,12 +127,14 @@ export class Tabla extends Component<IPropsTabla, IStateTabla>{
       columns: this.props.columns,
       groupKey: 'id',
       tBodyData: [],
-      tempData:{ rows: [] } as IDataParseada,
-      lenghtItems: 10,
+      tempData: [],
+      lengthItems: 10,
       searchTabla: '',
       currentPage: 1,
+      prevCurrentPage: 1,
       finItem: 10,
-      initItem:0,
+      initItem: 0,
+      totalRows: 0,
       dataParseada: { rows: [] } as IDataParseada
     }
   }
@@ -157,23 +162,69 @@ export class Tabla extends Component<IPropsTabla, IStateTabla>{
     }
     rowsDataParsed.push(itemRowBody)
     const dataParsed: IDataParseada = { rows: rowsDataParsed }
-    this.setState({ dataParseada: dataParsed ,tempData:dataParsed})
+    return { dataParseada: dataParsed, tempData: { ...dataParsed } }
+  }
+
+
+  fragmentarInformacion = (data: { dataParseada: IDataParseada, tempData: IDataParseada }) => {
+    const state = this.state
+    const lengthItems = state.lengthItems
+    const currentPage = lengthItems != -100 ? state.currentPage : 1
+    let tempData: IRowDataParseada[] = []
+    const dataParseada = { ...data.dataParseada }
+    const rowsBodyTabla = { ...dataParseada.rows.find(x => x.isBody == true) || {} }
+    const auxDataIndex = dataParseada.rows.findIndex(x => x.isBody == true)
+    const filasDatos = rowsBodyTabla.rowsBody?.filter(x => x)
+
+
+    const initData = lengthItems != -100 ? (currentPage - 1) * lengthItems : 0
+    const finalItem = this.props.data.length >= lengthItems ? lengthItems : this.props.data.length
+    const calculoFinalDatos = (currentPage) * finalItem <= this.props.data.length ? (currentPage) * finalItem : this.props.data.length
+    const finData = lengthItems != -100 ? calculoFinalDatos : 0
+
+
+    const newData: IRowDataParseada[] = []
+    // debugger
+    if (filasDatos && lengthItems != -100) {
+      if (filasDatos.length) {
+        for (let i = initData; i < finData; i++) {
+          newData.push(filasDatos[i])
+        }
+      }
+      tempData = newData
+    }
+    // console.log('state',this.state)
+    //  debugger
+    this.setState({ tempData, finItem: finData, initItem: initData, dataParseada })
   }
 
   componentDidMount(): void {
     const state = this.state
     this.setState({ groupKey: this.props.groupKey })
-    this.parsearData()    
+    const resultParsed = this.parsearData()
+    this.fragmentarInformacion(resultParsed)
+  }
+
+  componentDidUpdate(prevProps: Readonly<IPropsTabla>, prevState: Readonly<IStateTabla>, snapshot?: any): void {
+    const state = this.state
+    if (prevState.lengthItems !== state.lengthItems) {
+      console.log('length items actualizada', state.lengthItems)
+      this.setState({ currentPage: 1 })
+      this.componentDidMount()
+    }
+    if (prevState.currentPage !== state.currentPage) {
+      this.componentDidMount()
+    }
   }
 
   render(): ReactNode {
     const state = this.state
-    console.log('rows data::', state.tempData.rows)
+    console.log('rows data::', state.tempData)
     return <div className="table-component">
       <div className="options-lenght">
-        <LengthItems length={state.lenghtItems}
-          setLength={(value: number) => {this.setState({lenghtItems:value}) }} />
-        <SearchTable search={state.searchTabla} />
+        <LengthItems length={state.lengthItems}
+          setLength={(value: number) => { this.setState({ lengthItems: value }) }} />
+        <SearchTable ctx={this} />
       </div>
       <div className="table-content">
         {this.props.responsive01 && <TableResponsive01 ctx={this} />}
@@ -181,28 +232,32 @@ export class Tabla extends Component<IPropsTabla, IStateTabla>{
           <table className={"w-full table " + (this.props.class)}>
             <TableHeader columns={state.dataParseada.rows.filter(x => x.isHeaderTable)} />
             <TBody columns={() => {
-              const rows = state.tempData.rows.filter(x => x.isBody)
+              const rows = state.tempData
               return rows
-            }  }/>
+            }} />
           </table>
         }
+      </div>
+      <div className="options-paginacion">
+        <TextPaginacion ctx={this} />
+        <Paginacion ctx={this} length={state.lengthItems} data={state.tempData} />
       </div>
     </div>
   }
 }
 
 interface ITbodyProps {
-  columns:()=>IRowDataParseada[]| IRowDataParseada[]
+  columns: () => IRowDataParseada[] | IRowDataParseada[]
 }
 const TBody = (props: ITbodyProps) => {
   let rows: IRowDataParseada[] = []
   if (Array.isArray(props.columns)) {
-    rows=props.columns
+    rows = props.columns
   }
   if (typeof props.columns == 'function') {
-    rows=props.columns()
+    rows = props.columns()
   }
-  const rowBody=  rows.length ? rows[0].rowsBody||[]:[] 
+  const rowBody = rows.length ? rows || [] : []
   return <tbody>
     {rowBody.map((row, i) => {
       return <TRow row={row} key={i + 'row'} />
@@ -224,10 +279,10 @@ const TRow = (props: IPropsTD) => {
   </tr>
 }
 
-interface IPropsTableHeader {
+export interface IPropsTableHeader {
   columns: IRowDataParseada[]
 }
-const TableHeader = (props: IPropsTableHeader) => {
+export const TableHeader = (props: IPropsTableHeader) => {
   return <thead className={""} >
     {props.columns.map((header, index) => {
       return <TRowHead row={header} key={index + 'row'} />
@@ -251,7 +306,8 @@ interface IItemHeadRow {
   cell: IItemDataParseada
 }
 const ItemHeadRow = (props: IItemHeadRow) => {
-  return <th className={'  ' + (props.cell.class ? props.cell.class : '')} style={props.cell.css}>
-    {props.cell.value}
+  return <th className={'bg-app text-white' + (props.cell.class ? props.cell.class : '')}
+    style={{ fontSize: '14px', textAlign: 'left', ...props.cell.css }}>
+    <div className="w-max">{props.cell.value}</div>
   </th>
 }

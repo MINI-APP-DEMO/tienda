@@ -12,6 +12,23 @@ $bordered-color: #c8c4c4;
     text-align: center;
     padding-bottom: 0.4rem;
   }
+   .paginacion{
+    display: block;
+    text-align: center;
+    padding-bottom: 0.4rem;
+  }
+}
+@media screen and (min-width: $max-small  ) {
+.table-component{
+  .options-lenght{
+    display: flex;
+    justify-content: space-between;
+  }
+  .paginacion{
+    display: flex;
+    justify-content: space-between;
+  } 
+}
 }
 table {
   &.table {
